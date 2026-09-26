@@ -36,9 +36,12 @@ specific hardware (`esp32`, `arduino`, `jetson`), or specific infrastructure
   or fork count, in either direction.
 - **Detail view** — cards flip to reveal a longer extracted summary, language,
   license, and creation date, plus outbound links to the repository and to
-  its DeepWiki page.
-- **Notes** — a 500-character free-text annotation stored per repository,
-  surfaced on the card front as an indicator.
+  its DeepWiki page. Both card faces scroll their own text region, so a long
+  description remains fully readable without expanding the card.
+- **Notes** — a 500-character annotation opened from a pencil icon on the card
+  front. The editor renders in a popover anchored beside the card, autosaves on
+  a debounce as you type, and dismisses on the same icon, an outside click, or
+  Escape. The icon fills amber once a note exists, and note text is searchable.
 - **Manual overrides** — category and tag assignments can be corrected by hand.
   Overrides take precedence over inference and are preserved across
   reclassification.
@@ -247,6 +250,14 @@ otherwise; `isAccessAuthenticated()` in `src/worker.js` is the entire check.
 
 For local development, `wrangler dev` serves the Worker on `127.0.0.1`, which
 the auth function trusts by design. Place the token in `.dev.vars`.
+
+One wrinkle: `wrangler dev` proxies the remote `AI` binding to the deployed
+Worker, and that Worker sits behind Access, so the dev server refuses to start
+until given service-token credentials. Create a service token under
+Zero Trust → Access → Service Auth → Service Tokens, add
+`{ any_valid_service_token: {} }` to the app's allow policy, then export
+`CLOUDFLARE_ACCESS_CLIENT_ID` and `CLOUDFLARE_ACCESS_CLIENT_SECRET` before
+running `wrangler dev`. See `.dev.vars.example`.
 
 ## Customization
 
