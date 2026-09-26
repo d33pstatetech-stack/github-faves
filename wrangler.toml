@@ -1,0 +1,28 @@
+name = "github-faves"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "client/dist"
+not_found_handling = "single-page-application"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "github-faves"
+database_id = "bbe04048-cf07-490c-8a05-6b997e6f294f"
+
+# Compact client-side index snapshot (all repos, ~45KB) so filtering/sorting
+# needs zero D1 reads per page load.
+[[kv_namespaces]]
+binding = "INDEX"
+id = "b260cb9fb8a54e30b6021492fd2b88e9"
+
+# Free embedding fallback for repos that match no category rule.
+# ~161 neurons for a full 218-repo pass (10,000/day free allocation).
+[ai]
+binding = "AI"
+
+[vars]
+# Incremented when src/lib/classify.js rules change. Repos whose
+# classify_version < this get re-classified on the next sync/reclassify.
+CLASSIFY_VERSION = "3"

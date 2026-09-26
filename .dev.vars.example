@@ -1,0 +1,14 @@
+# Github Faves — local dev vars (DO NOT COMMIT real values)
+# Copy to .dev.vars and fill in. Deploy value via: wrangler secret put GITHUB_TOKEN
+#
+# This is the only secret the app needs. There is no OAuth flow: a classic PAT
+# with no scopes beyond public_repo works, and authentication to the app itself
+# is handled by Cloudflare Access (see isAccessAuthenticated in src/worker.js).
+
+# Required. Reads /user/starred + starredRepositories GraphQL + repositoryTopics.
+GITHUB_TOKEN=
+
+# Optional. Only needed for `wrangler d1` / `wrangler deploy` if you have not
+# already run `wrangler login`.
+# CLOUDFLARE_API_TOKEN=
+# CLOUDFLARE_ACCOUNT_ID=3e37b0a010de20bc7fc5b6c9d0dcb285

@@ -1,0 +1,144 @@
+@import 'tailwindcss';
+
+/* ── Design tokens ───────────────────────────────────────────────────────
+   Elevation is the whole game here. The previous palette put cards at #10151f
+   on a #0b0f17 page — a ~3% luminance difference, which reads as "dark on
+   dark". Surfaces are now spread across a deliberate ladder instead.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Surfaces: page → card → raised, each a clear step up in luminance. */
+  --color-void: #06080d;
+  --color-base: #0b0f18;
+  --color-surface: #161e2e;
+  --color-surface-hi: #1e2839;
+  --color-surface-top: #26324a;
+
+  /* Hairlines. */
+  --color-edge: #2a3550;
+  --color-edge-hi: #3b4a6b;
+
+  /* Type. Every value clears 4.5:1 on --color-surface except --text-dim. */
+  --color-primary: #f0f4fb;   /* 15.8:1  repo names, headings        */
+  --color-secondary: #b3c0d6; /* 8.9:1  descriptions, prose         */
+  --color-muted: #8593ad;  /*  5.2:1  metadata, owner              */
+  --color-faint: #64728c;  /*  3.4:1  large/decorative text only  */
+
+  /* Accents. */
+  --color-neon: #7dd3fc;   /* cyan   — neon glow + tags            */
+  --color-neon-deep: #22d3ee;
+  --color-violet: #a78bfa;
+  --color-amber: #fbbf24;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #16233b 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, #1a1630 0%, transparent 55%),
+    var(--color-base);
+  background-attachment: fixed;
+  color: var(--color-primary);
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+}
+
+/* ── Neon treatment for headings ────────────────────────────────────────
+   A tight text-shadow reads as an emissive edge rather than a blurry halo.
+   Two layers: a hard 1px inner lift plus a wide soft bloom.
+   ───────────────────────────────────────────────────────────────────────── */
+.neon-title {
+  color: var(--color-primary);
+  text-shadow:
+    0 0 1px rgba(186, 230, 253, 0.55),
+    0 0 10px rgba(125, 211, 252, 0.42),
+    0 0 24px rgba(129, 140, 248, 0.22);
+}
+
+.neon-title-cyan {
+  color: var(--color-primary);
+  text-shadow:
+    0 0 1px rgba(186, 230, 253, 0.6),
+    0 0 9px rgba(34, 211, 238, 0.5),
+    0 0 22px rgba(34, 211, 238, 0.22);
+}
+
+/* Tag chips get a faint inner bloom so they read as illuminated. */
+.neon-tag {
+  color: #9beafd;
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+  background: linear-gradient(180deg, #10304a 0%, #0c2338 100%);
+  border-color: #1d4a68;
+  box-shadow: inset 0 1px 0 rgba(148, 210, 255, 0.13);
+}
+
+/* ── Card flip ─────────────────────────────────────────────────────────── */
+.flip-scene { perspective: 1600px; }
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.flip-inner.is-flipped { transform: rotateY(180deg); }
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0.875rem;
+  /* Top edge catches light, bottom stays deep — cheap vertical elevation. */
+  background:
+    linear-gradient(180deg, var(--color-surface-hi) 0%, var(--color-surface) 38%, #131a28 100%);
+  border: 1px solid var(--color-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(148, 180, 230, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    0 8px 20px -6px rgba(0, 0, 0, 0.55);
+}
+.flip-face:hover { border-color: var(--color-edge-hi); }
+.flip-face-back { transform: rotateY(180deg); }
+.flip-inner.is-flipped .flip-face-back {
+  border-color: #3f5ea8;
+  box-shadow:
+    inset 0 1px 0 rgba(148, 180, 230, 0.1),
+    0 0 0 1px rgba(99, 102, 241, 0.25),
+    0 10px 28px -8px rgba(0, 0, 0, 0.6);
+}
+
+/* Scrollbars inside panels */
+.thin-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #33405c;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.thin-scroll::-webkit-scrollbar-thumb:hover { background: #45557a; background-clip: padding-box; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-inner { transition: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.9s linear infinite; }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }

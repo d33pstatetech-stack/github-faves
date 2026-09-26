@@ -1,0 +1,11 @@
+# Normalize line endings so the repo is consistent across platforms.
+* text=auto eol=lf
+
+# Windows shell scripts must stay CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary / lockfile handling.
+*.png binary
+*.jpg binary
+*.ico binary

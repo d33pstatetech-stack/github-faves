@@ -1,0 +1,20 @@
+{
+  "name": "github-faves",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "npm --prefix client run build",
+    "d1:create": "wrangler d1 create github-faves",
+    "d1:migrate:local": "wrangler d1 execute github-faves --local --file=migrations/0001_init.sql",
+    "d1:migrate:remote": "wrangler d1 execute github-faves --remote --file=migrations/0001_init.sql",
+    "kv:create": "wrangler kv namespace create INDEX",
+    "setup:local": "npm run d1:migrate:local",
+    "setup:remote": "npm run d1:migrate:remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.34.0"
+  }
+}
